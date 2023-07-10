@@ -10,6 +10,7 @@ import com.apex.codeassesment.data.UserRepository
 import com.apex.codeassesment.data.model.User
 import com.apex.codeassesment.di.MainComponent
 import com.apex.codeassesment.ui.details.DetailsActivity
+import com.apex.codeassesment.utils.navigateDetails
 import javax.inject.Inject
 
 // TODO (5 points): Move calls to repository to Presenter or ViewModel.
@@ -73,11 +74,8 @@ class MainActivity : AppCompatActivity() {
     }
   }
 
-  // TODO (2 points): Convert to extenstion function.
-  private fun navigateDetails(user: User) {
-    val putExtra = Intent(this, DetailsActivity::class.java).putExtra("saved-user-key", user)
-    startActivity(putExtra)
-  }
+
+
 
   companion object {
     var sharedContext: Context? = null
