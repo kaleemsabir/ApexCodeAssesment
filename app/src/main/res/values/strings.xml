@@ -11,4 +11,9 @@
     <string name="location_random_user">Location of random user: (%1$s, %2$s)</string>
     <string name="location_phone">Location of this phone: (%1$s, %2$s)</string>
     <string name="location_result_miles">[%f] miles</string>
+    <string name="email">Email:</string>
+    <string name="name">Name:</string>
+    <string name="refresh_user_hint">Refresh random user</string>
+    <string name="show_users_count">Show 10 users</string>
+    <string name="thumbnail">thumbnail</string>
 </resources>
