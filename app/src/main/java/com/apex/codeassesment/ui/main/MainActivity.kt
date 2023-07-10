@@ -11,6 +11,7 @@ import com.apex.codeassesment.ui.main.adapter.SimpleItemListAdapter
 import com.apex.codeassesment.ui.main.viewmodel.MainViewModel
 import com.apex.codeassesment.utils.BindingUtils
 import com.apex.codeassesment.utils.navigateDetails
+import javax.inject.Inject
 
 
 // TODO (5 points): Use combination of sealed/Dataclasses for exposing the data required by the view from viewModel .
@@ -21,12 +22,13 @@ import com.apex.codeassesment.utils.navigateDetails
 class MainActivity : AppCompatActivity() {
 
 
-    private val mainViewModel: MainViewModel by viewModels()
+    @Inject
+    lateinit var  mainViewModel: MainViewModel
 
     lateinit var binding: ActivityMainBinding
     private var randomUser: User = User()
         set(value) {
-            BindingUtils.loadImageFromUrl(binding.mainImage, mainViewModel.getUser().picture?.large)
+            BindingUtils.loadImageFromUrl(binding.mainImage, randomUser.picture?.large)
 
             binding.mainName.text = value.name!!.first
             binding.mainEmail.text = value.email
@@ -44,16 +46,27 @@ class MainActivity : AppCompatActivity() {
 
         (applicationContext as MainComponent.Injector).mainComponent.inject(this)
 
-        randomUser = mainViewModel.getSavedUsers()
+       // randomUser = mainViewModel.getSavedUsers()
 
         binding.mainSeeDetailsButton.setOnClickListener { navigateDetails(randomUser) }
 
-        binding.mainRefreshButton.setOnClickListener { randomUser = mainViewModel.getUser() }
+        binding.mainRefreshButton.setOnClickListener { mainViewModel.getUserData() }
 
         binding.mainUserListButton.setOnClickListener {
-            val users = mainViewModel.getUsersData()
-            binding.mainUserList.adapter = SimpleItemListAdapter(users) {
-                navigateDetails(it)
+             mainViewModel.getUsersData()
+        }
+
+        mainViewModel.users.observe(this) {
+            binding.mainUserList.adapter = it?.let { it1 ->
+                SimpleItemListAdapter(it1) {
+                    navigateDetails(it)
+                }
+            }
+        }
+
+        mainViewModel.user.observe(this) {
+            if (it != null) {
+                randomUser = it
             }
         }
     }
