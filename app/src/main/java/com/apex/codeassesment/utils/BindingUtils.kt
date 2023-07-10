@@ -7,7 +7,7 @@ import com.apex.codeassesment.R
 import com.bumptech.glide.Glide
 
 object BindingUtils {
-    @BindingAdapter(value = ["loadImageFromUrl", "placeHolder"], requireAll = false)
+    @BindingAdapter(value = ["loadImageFromUrl"], requireAll = false)
     @JvmStatic
     fun loadImageFromUrl(
         imageView: ImageView,

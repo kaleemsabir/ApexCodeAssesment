@@ -10,9 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.apex.codeassesment.R
 import com.apex.codeassesment.data.UserRepository
 import com.apex.codeassesment.data.model.User
+import com.apex.codeassesment.databinding.ActivityLocationBinding
+import com.apex.codeassesment.databinding.ActivityMainBinding
 import com.apex.codeassesment.di.MainComponent
 import com.apex.codeassesment.ui.details.DetailsActivity
 import com.apex.codeassesment.ui.main.viewmodel.MainViewModel
+import com.apex.codeassesment.utils.BindingUtils
 import com.apex.codeassesment.utils.navigateDetails
 import javax.inject.Inject
 
@@ -24,52 +27,44 @@ import javax.inject.Inject
 //  Jetpack Compose.
 class MainActivity : AppCompatActivity() {
 
-  // TODO (2 points): Convert to view binding
-  private var userImageView: ImageView? = null
-  private var userNameTextView: TextView? = null
-  private var userEmailTextView: TextView? = null
-  private var seeDetailsButton: Button? = null
-  private var refreshUserButton: Button? = null
-  private var showUserListButton: Button? = null
-  private var userListView: ListView? = null
 
   private val mainViewModel: MainViewModel by viewModels()
 
+  lateinit var binding : ActivityMainBinding
   private var randomUser: User = User()
     set(value) {
       // TODO (1 point): Use Glide to load images after getting the data from endpoints mentioned in RemoteDataSource
       // userImageView.setImageBitmap(refreshedUser.image)
-      userNameTextView!!.text = value.name!!.first
-      userEmailTextView!!.text = value.email
+
+      binding.mainName.text = value.name!!.first
+      binding.mainEmail.text = value.email
       field = value
     }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
+
+
     sharedContext = this
 
     (applicationContext as MainComponent.Injector).mainComponent.inject(this)
 
     val arrayAdapter = ArrayAdapter<User>(this, android.R.layout.simple_list_item_1)
 
-    userImageView = findViewById(R.id.main_image)
-    userNameTextView = findViewById(R.id.main_name)
-    userEmailTextView = findViewById(R.id.main_email)
-    seeDetailsButton = findViewById(R.id.main_see_details_button)
-    refreshUserButton = findViewById(R.id.main_refresh_button)
-    showUserListButton = findViewById(R.id.main_user_list_button)
-    userListView = findViewById(R.id.main_user_list)
-    userListView!!.adapter = arrayAdapter
-    userListView?.setOnItemClickListener { parent, _, position, _ -> navigateDetails(parent.getItemAtPosition(position) as User) }
+
+    binding.mainUserList.adapter = arrayAdapter
+    binding.mainUserList.setOnItemClickListener { parent, _, position, _ -> navigateDetails(parent.getItemAtPosition(position) as User) }
 
     randomUser = mainViewModel.getSavedUsers()
 
-    seeDetailsButton!!.setOnClickListener { navigateDetails(randomUser) }
+    binding.mainSeeDetailsButton.setOnClickListener { navigateDetails(randomUser) }
 
-    refreshUserButton!!.setOnClickListener { randomUser = mainViewModel.getUser() }
+    binding.mainRefreshButton.setOnClickListener { randomUser = mainViewModel.getUser() }
 
-    showUserListButton!!.setOnClickListener {
+    binding.mainUserListButton.setOnClickListener {
       val users = mainViewModel.getUsersData()
       arrayAdapter.clear()
       arrayAdapter.addAll(users)
