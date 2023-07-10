@@ -33,8 +33,7 @@ class MainActivity : AppCompatActivity() {
   lateinit var binding : ActivityMainBinding
   private var randomUser: User = User()
     set(value) {
-      // TODO (1 point): Use Glide to load images after getting the data from endpoints mentioned in RemoteDataSource
-      // userImageView.setImageBitmap(refreshedUser.image)
+      BindingUtils.loadImageFromUrl(userImageView,mainViewModel.getUser().picture?.large)
 
       binding.mainName.text = value.name!!.first
       binding.mainEmail.text = value.email
