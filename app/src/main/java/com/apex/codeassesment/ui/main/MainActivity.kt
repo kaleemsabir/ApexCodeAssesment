@@ -4,16 +4,18 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.apex.codeassesment.R
 import com.apex.codeassesment.data.UserRepository
 import com.apex.codeassesment.data.model.User
 import com.apex.codeassesment.di.MainComponent
 import com.apex.codeassesment.ui.details.DetailsActivity
+import com.apex.codeassesment.ui.main.viewmodel.MainViewModel
 import com.apex.codeassesment.utils.navigateDetails
 import javax.inject.Inject
 
-// TODO (5 points): Move calls to repository to Presenter or ViewModel.
 // TODO (5 points): Use combination of sealed/Dataclasses for exposing the data required by the view from viewModel .
 // TODO (3 points): Add tests for viewmodel or presenter.
 // TODO (1 point): Add content description to images
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
   private var showUserListButton: Button? = null
   private var userListView: ListView? = null
 
-  @Inject lateinit var userRepository: UserRepository
+  private val mainViewModel: MainViewModel by viewModels()
 
   private var randomUser: User = User()
     set(value) {
@@ -61,14 +63,14 @@ class MainActivity : AppCompatActivity() {
     userListView!!.adapter = arrayAdapter
     userListView?.setOnItemClickListener { parent, _, position, _ -> navigateDetails(parent.getItemAtPosition(position) as User) }
 
-    randomUser = userRepository.getSavedUser()
+    randomUser = mainViewModel.getSavedUsers()
 
     seeDetailsButton!!.setOnClickListener { navigateDetails(randomUser) }
 
-    refreshUserButton!!.setOnClickListener { randomUser = userRepository.getUser(true) }
+    refreshUserButton!!.setOnClickListener { randomUser = mainViewModel.getUser() }
 
     showUserListButton!!.setOnClickListener {
-      val users = userRepository.getUsers()
+      val users = mainViewModel.getUsersData()
       arrayAdapter.clear()
       arrayAdapter.addAll(users)
     }
