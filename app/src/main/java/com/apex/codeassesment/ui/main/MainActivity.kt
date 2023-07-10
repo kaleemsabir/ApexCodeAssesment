@@ -2,12 +2,12 @@ package com.apex.codeassesment.ui.main
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.apex.codeassesment.data.model.User
 import com.apex.codeassesment.databinding.ActivityMainBinding
 import com.apex.codeassesment.di.MainComponent
+import com.apex.codeassesment.ui.main.adapter.SimpleItemListAdapter
 import com.apex.codeassesment.ui.main.viewmodel.MainViewModel
 import com.apex.codeassesment.utils.BindingUtils
 import com.apex.codeassesment.utils.navigateDetails
@@ -44,16 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         (applicationContext as MainComponent.Injector).mainComponent.inject(this)
 
-        val arrayAdapter = ArrayAdapter<User>(this, android.R.layout.simple_list_item_1)
-
-
-        binding.mainUserList.adapter = arrayAdapter
-        binding.mainUserList.setOnItemClickListener { parent, _, position, _ ->
-            navigateDetails(
-                parent.getItemAtPosition(position) as User
-            )
-        }
-
         randomUser = mainViewModel.getSavedUsers()
 
         binding.mainSeeDetailsButton.setOnClickListener { navigateDetails(randomUser) }
@@ -62,8 +52,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.mainUserListButton.setOnClickListener {
             val users = mainViewModel.getUsersData()
-            arrayAdapter.clear()
-            arrayAdapter.addAll(users)
+            binding.mainUserList.adapter = SimpleItemListAdapter(users) {
+                navigateDetails(it)
+            }
         }
     }
 
